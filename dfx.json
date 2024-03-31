@@ -1,0 +1,29 @@
+{
+  "canisters": {
+    "history_backend": {
+      "declarations": {
+        "node_compatibility": true
+      },
+      "main": "src/history_backend/main.mo",
+      "type": "motoko"
+    },
+    "history_frontend": {
+      "dependencies": [
+        "history_backend"
+      ],
+      "source": [
+        "src/history_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "history_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
