@@ -6,6 +6,12 @@
       },
       "main": "src/history_backend/main.mo",
       "type": "motoko"
+    }, "backend": {
+      "declarations": {
+        "node_compatibility": true
+      },
+      "main": "src/backend/Container.mo",
+      "type": "motoko"
     },
     "history_frontend": {
       "dependencies": [
