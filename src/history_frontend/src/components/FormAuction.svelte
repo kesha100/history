@@ -1,5 +1,31 @@
 <script lang="ts">
   import { Button } from "bits-ui";
+
+  let input = '';
+	let disabled = false;
+	let greeting = '';
+
+	// const handleOnSubmit = async () => {
+	// 	disabled = true;
+
+	// 	try {
+	// 		// Canister IDs are automatically expanded to .env config - see vite.config.ts
+	// 		const canisterId = import.meta.env.VITE_BACKEND_CANISTER_ID;
+
+	// 		// We pass the host instead of using a proxy to support NodeJS >= v17 (ViteJS issue: https://github.com/vitejs/vite/issues/4794)
+	// 		const host = import.meta.env.VITE_HOST;
+
+	// 		// Create an actor to interact with the IC for a particular canister ID
+	// 		const actor = createActor(canisterId, { agentOptions: { host } });
+
+	// 		// Call the IC
+	// 		greeting = await actor.greet(input);
+	// 	} catch (err: unknown) {
+	// 		console.error(err);
+	// 	}
+
+	// 	disabled = false;
+	// };
 </script>
 
 <main class="p-4 mt-9 border-t border-solid border-white border-b border-solid border-white">
