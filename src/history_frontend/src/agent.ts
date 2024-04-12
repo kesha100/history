@@ -1,4 +1,4 @@
-import type {ActorSubclass} from "@dfinity/agent";
+import type {ActorSubclass,Actor} from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import type { _SERVICE } from "../../declarations/backend/backend.did";
 import { createActor, canisterId } from "../../declarations/backend";
@@ -19,6 +19,6 @@ export namespace BackendActor {
       }
     });
   
-    return backendActor;
+    return backendActor as unknown as ActorSubclass<_SERVICE>;
   }
 };
