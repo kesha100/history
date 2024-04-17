@@ -3,11 +3,36 @@ import Principal "mo:base/Principal";
 import Timer "mo:base/Timer";
 import Debug "mo:base/Debug";
 import List "mo:base/List";
+import Array "mo:base/Array";
+import HashMap "mo:base/HashMap";
+import Types "../backend/Types";
+import Buckets "../backend/Buckets";
+import Cycles "mo:base/ExperimentalCycles";
+import Nat "mo:base/Nat";
 
 actor {
+  public type canister_settings = {
+    freezing_threshold : ?Nat;
+    controllers : ?[Principal];
+    memory_allocation : ?Nat;
+    compute_allocation : ?Nat;
+  };
+  public type canister_id = Principal;
+  public type definite_canister_settings = {
+    freezing_threshold : Nat;
+    controllers : [Principal];
+    memory_allocation : Nat;
+    compute_allocation : Nat;
+  };
+  public type wasm_module = [Nat8];
+
   public query func greet(name : Text) : async Text {
     return "Hello, " # name # "!";
   };
+  private let canisters : [var ?CanisterState<Bucket, Nat>] = Array.init(10, null);
+  private let threshold = 2147483648; //  ~2GB
+  private let canisterMap = HashMap.HashMap<Principal, Nat>(100, Principal.equal, Principal.hash);
+  private let cycleShare = 1_000_000_000_000;
 
   type Item = {
     title : Text;
@@ -22,6 +47,14 @@ actor {
   };
 
   type AuctionId = Nat;
+  type FileId = Types.FileId;
+  type FileInfo = Types.FileInfo;
+  type Bucket = Buckets.Bucket;
+
+  type CanisterState<Bucket, Nat> = {
+    bucket  : Bucket;
+    var size : Nat;
+  };
 
   type AuctionOverview = {
     id : AuctionId;
@@ -113,3 +146,6 @@ actor {
     auction.bidHistory := List.push(newBid, auction.bidHistory);
   };
 };
+
+
+
