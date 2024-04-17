@@ -34,6 +34,8 @@ module {
     #aac;
     #mp4;
     #avi;
+    #txt;
+    #doc;
   };
 
   public type FileInfo = {
