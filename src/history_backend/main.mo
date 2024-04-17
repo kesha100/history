@@ -61,16 +61,6 @@ type Wallet = {
   // stable var wallets = List.nil<Wallet>();
   stable var idCounter = 0;
 
-  // func tick() : async () {
-  //   for (auction in List.toIter(auctions)) {
-  //     if (auction.remainingTime > 0) {
-  //       auction.remainingTime -= 1;
-  //     };
-  //   };
-  // };
-
-  /// Install a timer:
-  // let timer = Timer.recurringTimer(#seconds 1, tick);
 
   func newAuctionId() : AuctionId {
     let id = idCounter;
