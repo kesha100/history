@@ -5,6 +5,8 @@ import Debug "mo:base/Debug";
 import List "mo:base/List";
 import Array "mo:base/Array";
 import Container "../backend/Container";
+import Nat "mo:base/Nat";
+import Text "mo:base/Text";
 
 actor {
   public query func greet(name : Text) : async Text {
@@ -12,8 +14,7 @@ actor {
   };
 
   type Item = {
-    title : Text;
-    description : Text;
+    bid : Nat;
     content : Blob;
   };
 
@@ -33,32 +34,43 @@ actor {
   type AuctionDetails = {
     item : Item;
     bidHistory : [Bid];
-    remainingTime : Nat;
+    // remainingTime : Nat;
   };
 
   type Auction = {
     id : AuctionId;
     item : Item;
     var bidHistory : List.List<Bid>;
-    var remainingTime : Nat;
   };
 
- 
+ // Структура для представления пользователя и его кошелька
+type User = {
+  id: Text;
+  wallet: Wallet;
+};
+
+// Структура кошелька
+type Wallet = {
+  balance: Nat;
+};
+
+// База данных пользователей
+  stable var users = List.nil<User>();
   
   stable var auctions = List.nil<Auction>();
   // stable var wallets = List.nil<Wallet>();
   stable var idCounter = 0;
 
-  func tick() : async () {
-    for (auction in List.toIter(auctions)) {
-      if (auction.remainingTime > 0) {
-        auction.remainingTime -= 1;
-      };
-    };
-  };
+  // func tick() : async () {
+  //   for (auction in List.toIter(auctions)) {
+  //     if (auction.remainingTime > 0) {
+  //       auction.remainingTime -= 1;
+  //     };
+  //   };
+  // };
 
   /// Install a timer:
-  let timer = Timer.recurringTimer(#seconds 1, tick);
+  // let timer = Timer.recurringTimer(#seconds 1, tick);
 
   func newAuctionId() : AuctionId {
     let id = idCounter;
@@ -66,10 +78,10 @@ actor {
     id;
   };
 
-  public func newAuction(item : Item, duration : Nat) : async () {
+  public func newAuction(item : Item) : async () {
     let id = newAuctionId();
     let bidHistory = List.nil<Bid>();
-    let newAuction = { id; item; var bidHistory; var remainingTime = duration };
+    let newAuction = { id; item; var bidHistory};
     auctions := List.push(newAuction, auctions);
   };
   public query func getOverviewList() : async [AuctionOverview] {
@@ -92,7 +104,7 @@ actor {
   public query func getAuctionDetails(auctionId : AuctionId) : async AuctionDetails {
     let auction = findAuction(auctionId);
     let bidHistory = List.toArray(List.reverse(auction.bidHistory));
-    { item = auction.item; bidHistory; remainingTime = auction.remainingTime };
+    { item = auction.item; bidHistory };
   };
 
   func minimumPrice(auction : Auction) : Nat {
@@ -104,33 +116,48 @@ actor {
 
   public shared (message) func makeBid(auctionId : AuctionId, price : Nat) : async () {
     let originator = message.caller;
-    if (Principal.isAnonymous(originator)) {
-      Debug.trap("Anonymous caller");
-    };
+   
     let auction = findAuction(auctionId);
     if (price < minimumPrice(auction)) {
       Debug.trap("Price too low");
     };
-    let time = auction.remainingTime;
-    if (time == 0) {
-      Debug.trap("Auction closed");
-    };
+   
   };
- public func someFunction() : async () {
-    let container = Container.Container();
-    
-    // Call putFileInfo() function
-    let fileInfo = Container.FileInfo {
-      // Fill in the file info
-    };
-    let fileId = await container.putFileInfo(fileInfo);
-    
-    // Call putFileChunks() function
-    let chunkNum = 1;
-    let fileSize = 1000; // Example file size
-    let chunkData = Blob.Blob([]); // Example chunk data
-    await container.putFileChunks(fileId, chunkNum, fileSize, chunkData);
-  }
+
+public query func decodeBlobToText(blob: Blob) : async ?Text {
+  let text : ?Text = Text.decodeUtf8(blob);
+  return text;
+};
+
+  // Function to get wallet balance based on user ID
+// public func getWalletBalance(userId : Nat) : async Nat {
+//     // Find the user with the provided ID in the list of users
+//     let user = List.find((u): u.id == userId, users);
+//     if(?user != null){
+//       return user.wallet;
+//     };
+//     if(?user == null){
+//       return 0;
+//     };
+// };
+
+// public shared ({ caller }) func register() : async () {
+//   let userId = caller; // Assuming caller represents the user ID
+//     let userWallet = getWalletBalance(userId);
+//     if(Principal.isAnonymous(caller)){
+//       let user : User = {
+//         id;
+//         wallet; 
+//     };
+//     users := List.push(user, users);
+//         return;
+//     };
+//     let user : User = {
+//         id;
+//         wallet; 
+//     };
+//     users := List.push(user, users);
+// };
 
 };
 
