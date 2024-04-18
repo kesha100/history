@@ -219,7 +219,7 @@ shared ({caller = owner}) actor class Container() = this {
     let b: Bucket = await getEmptyBucket(?fi.size);
     Debug.print("creating file info..." # debug_show(fi));
     let fileId = await b.putFile(fi);
-    fileId
+    fileId;
   };
 
   func getBucket(cid: Principal) : async ?Bucket {
