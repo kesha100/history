@@ -65,28 +65,30 @@
     //   ]
     // }
   ];
-  let files = writable([]);
+    let files = writable([]);
+    let isLoading = writable(true);
 
-  onMount(async () => {
-    const overviewList = await backend.getOverviewList();
-    let newFiles = [];
+    onMount(async () => {
+      const overviewList = await backend.getOverviewList();
+      let newFiles = [];
 
-    for (const item of overviewList) {
-      const file = await backend.decodeBlobToText(item?.item?.content);
-      newFiles.push(file);
-    }
-    files.set(newFiles);
-    return {
-      status: 200,
-      body: { overviewList }
-    };
-  });
+      for (const item of overviewList) {
+        const file = await backend.decodeBlobToText(item?.item?.content);
+        newFiles.push(file);
+      }
+      files.set(newFiles);
+      isLoading.set(false);
+    });
 
-</script>
-<main>
-  <h1>Past History</h1>
-  <AccordionHistory file={$files}/>
-</main>
+  </script>
+  <main>
+    <h1>Past History</h1>
+    {#if $isLoading}
+    <p>Loading...</p>  <!-- Show loading message -->
+    {:else}
+      <AccordionHistory file={$files}/>
+    {/if}
+  </main>
 
 <style>
     main{
