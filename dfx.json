@@ -13,6 +13,13 @@
       "main": "src/backend/Container.mo",
       "type": "motoko"
     },
+    "demo": {
+      "declarations": {
+        "node_compatibility": true
+      },
+      "main": "src/demo/main.mo",
+      "type": "motoko"
+    },
     "history_frontend": {
       "dependencies": [
         "history_backend"
