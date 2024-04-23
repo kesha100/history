@@ -4,13 +4,13 @@
   import { slide } from "svelte/transition";
   import { writable } from 'svelte/store';
   import down from '../assets/down.svg';
-  import up from '../assets/up.svg'
+  import up from '../assets/up.svg';
 
   let change = writable(false);
-  export let file;
-  let parsedFile = file ? file : [];
-  // let file = [1,2,3]
-  console.log(file);
+  export let value;
+  // let parsedFile = value ? value : [];
+  // // let file = [1,2,3]
+  console.log(value);
 </script>
 
   <Accordion.Root class="w-full sm:max-w-[70%] mx-auto" multiple>
@@ -24,21 +24,20 @@
             <span
               class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10 lg"
             >
-                <img src={$change ? up : down} alt="toggle" />
+              <img src={$change ? up : down} alt="toggle" />
             </span>
           </Accordion.Trigger>
         </Accordion.Header>
-        {#if parsedFile.length === 0}
+        <!-- {#if value.length === 0} -->
           <Accordion.Content class="pb-[25px] text-sm tracking-[-0.01em]">
             There is no history.
           </Accordion.Content>
-        {:else}
+        <!-- {:else} -->
         
-          <Accordion.Content transition={slide} transitionConfig={{ duration: 200 }} class="pb-[25px] text-sm tracking-[-0.01em]">
+          <!-- <Accordion.Content transition={slide} transitionConfig={{ duration: 200 }} class="pb-[25px] text-sm tracking-[-0.01em]">
             <h2 class="text-lg font-bold">aya</h2>
             <p>dd</p>
           </Accordion.Content>
-        
-        {/if}
+        {/if} -->
       </Accordion.Item>
   </Accordion.Root>

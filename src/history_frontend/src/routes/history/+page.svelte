@@ -86,7 +86,7 @@
     {#if $isLoading}
     <p>Loading...</p>  <!-- Show loading message -->
     {:else}
-      <AccordionHistory file={$files}/>
+      <AccordionHistory value={$files}/>
     {/if}
   </main>
 
