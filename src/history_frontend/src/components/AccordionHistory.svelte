@@ -8,7 +8,7 @@
 
   let change = writable(false);
   export let file;
-  $: parsedFile = file ? file : [];
+  let parsedFile = file ? file : [];
   // let file = [1,2,3]
   console.log(file);
 </script>
@@ -33,11 +33,12 @@
             There is no history.
           </Accordion.Content>
         {:else}
-          {#each parsedFile[0] as content}
-            <Accordion.Content transition={slide} transitionConfig={{ duration: 200 }} class="pb-[25px] text-sm tracking-[-0.01em]">
-              <p>{content}</p>
-            </Accordion.Content>
-          {/each}
+        
+          <Accordion.Content transition={slide} transitionConfig={{ duration: 200 }} class="pb-[25px] text-sm tracking-[-0.01em]">
+            <h2 class="text-lg font-bold">aya</h2>
+            <p>dd</p>
+          </Accordion.Content>
+        
         {/if}
       </Accordion.Item>
   </Accordion.Root>
