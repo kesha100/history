@@ -65,7 +65,7 @@
     //   ]
     // }
   ];
-    let files = writable([]);
+    let files = [];
     let isLoading = writable(true);
 
     onMount(async () => {
@@ -76,9 +76,12 @@
         const file = await backend.decodeBlobToText(item?.item?.content);
         newFiles.push(file);
       }
-      files.set(newFiles);
+
+      files = newFiles;
       isLoading.set(false);
     });
+
+    console.log(files)
 
   </script>
   <main>
@@ -86,7 +89,10 @@
     {#if $isLoading}
     <p>Loading...</p>  <!-- Show loading message -->
     {:else}
-      <AccordionHistory value={$files}/>
+      
+      {#each files as item, i}
+        <AccordionHistory item={item} i={i}/>
+      {/each}
     {/if}
   </main>
 

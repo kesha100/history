@@ -7,14 +7,12 @@
   import up from '../assets/up.svg';
 
   let change = writable(false);
-  export let value;
-  // let parsedFile = value ? value : [];
-  // // let file = [1,2,3]
-  console.log(value);
+  export let item;
+  export let i;
 </script>
 
   <Accordion.Root class="w-full sm:max-w-[70%] mx-auto" multiple>
-      <Accordion.Item class="group border-b border-dark-10 px-1.5">
+      <Accordion.Item value="${i}" class="group border-b border-dark-10 px-1.5">
         <Accordion.Header>
           <Accordion.Trigger
             on:click={() => change.update(n => !n)} 
@@ -28,16 +26,15 @@
             </span>
           </Accordion.Trigger>
         </Accordion.Header>
-        <!-- {#if value.length === 0} -->
+        {#if item.length === 0}
           <Accordion.Content class="pb-[25px] text-sm tracking-[-0.01em]">
             There is no history.
           </Accordion.Content>
-        <!-- {:else} -->
+        {:else}
         
-          <!-- <Accordion.Content transition={slide} transitionConfig={{ duration: 200 }} class="pb-[25px] text-sm tracking-[-0.01em]">
-            <h2 class="text-lg font-bold">aya</h2>
-            <p>dd</p>
+          <Accordion.Content transition={slide} transitionConfig={{ duration: 200 }} class="pb-[25px] text-sm tracking-[-0.01em]">
+            {# item}
           </Accordion.Content>
-        {/if} -->
+        {/if}
       </Accordion.Item>
   </Accordion.Root>
