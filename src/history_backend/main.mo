@@ -1,6 +1,5 @@
 
 import Principal "mo:base/Principal";
-import Timer "mo:base/Timer";
 import Debug "mo:base/Debug";
 import List "mo:base/List";
 import Order "mo:base/Order";
@@ -10,12 +9,21 @@ import Nat "mo:base/Nat";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 
+import Types "../backend/Types";
+import Buckets "../backend/Buckets";
+
 actor {
+
   public query func greet(name : Text) : async Text {
     return "Hello, " # name # "!";
-  };
+  }; 
 
   type Item = {
+    bid : Nat;
+    content : Blob;
+  };
+
+  type Itemg = {
     bid : Nat;
     content : Blob;
   };
@@ -27,6 +35,14 @@ actor {
   };
 
   type AuctionId = Nat;
+  type FileId = Types.FileId;
+  type FileInfo = Types.FileInfo;
+  type Bucket = Buckets.Bucket;
+
+  type CanisterState<Bucket, Nat> = {
+    bucket  : Bucket;
+    var size : Nat;
+  };
 
   type AuctionOverview = {
     id : AuctionId;
@@ -376,3 +392,5 @@ public query func decodeBlobToText(blob: Blob) : async ?Text {
 //     fileId
 //   };
 // };
+
+
