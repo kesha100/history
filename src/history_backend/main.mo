@@ -91,6 +91,31 @@ type Wallet = {
   };
 
 
+// public func getTodaysOverviewList() : async [AuctionOverview] {
+//     let today = Date.localDateNow();
+    
+//     // Function to check if an auction was created today
+//     func isTodaysAuction(auction : Auction) : Bool {
+//         let auctionDate = Date.fromTime(auction.createdAt / 1000); // Assuming createdAt is in milliseconds
+//         return auctionDate.year == today.year  auctionDate.month  today.month  auctionDate.day == today.day;
+//     };
+    
+//     // Function to convert auction to overview
+//     func getOverview(auction : Auction) : AuctionOverview {
+//         return { id = auction.id; item = auction.item; createdAt = auction.createdAt; };
+//     };
+
+//     // Filter auctions created today and map them to overview
+//     let todaysAuctions = Array.filter(isTodaysAuction, auctions);
+//     let overviewList = Array.map<Auction, AuctionOverview>(getOverview, todaysAuctions);
+
+//     // Reverse the list if needed
+//     let reversedOverviewList = Array.reverse(overviewList);
+
+//     reversedOverviewList;
+// };
+
+
   func findAuction(auctionId : AuctionId) : Auction {
     let result = List.find<Auction>(auctions, func auction = auction.id == auctionId);
     switch (result) {

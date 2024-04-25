@@ -20,7 +20,7 @@ import Time "mo:base/Time";
 import Prim "mo:⛔";
 import Nat8 "mo:base/Nat8";
 
-actor demo{
+actor transaction{
     
     public type Memo = Nat64;
 
@@ -79,7 +79,7 @@ actor demo{
         account_balance : query AccountBalanceArgs -> async Token;
     };
 
-    var main_account_principal = Principal.fromText("slqa4-73acs-65lmr-d52by-ugflp-4dm7p-i2omo-yrw65-5d7mn-qqcbh-lae");
+    var main_account_principal = Principal.fromText("xx72p-ptghb-kq2jx-dinfy-ewn7q-p5rnj-k2yq7-wxfx2-5gzir-3ullk-nqe");
     var default_sub_account_blob = Blob.fromArray(Array.freeze<Nat8>(Array.init<Nat8>(32, 0x00:Nat8)));
     var sub_account_metadata = Array.init<Nat8>(32, 0x00:Nat8);
     sub_account_metadata[0] := 0x01 : Nat8;
@@ -102,8 +102,8 @@ actor demo{
     };
 
     public shared({caller}) func init() : async Text{
-        sub_account_identifier := A.accountIdentifier(Principal.fromActor(demo), sub_account_blob);
-        canister_account_identifier := A.accountIdentifier(Principal.fromActor(demo), default_sub_account_blob);
+        sub_account_identifier := A.accountIdentifier(Principal.fromActor(transaction), sub_account_blob);
+        canister_account_identifier := A.accountIdentifier(Principal.fromActor(transaction), default_sub_account_blob);
         "subaccount identifier : " # debug_show(sub_account_identifier)
         #
         "\n"
@@ -142,6 +142,7 @@ actor demo{
             case(#Err(error)){ debug_show(error) };
         }
     };
+
 
     public shared({caller}) func transferBack(
         to : AccountIdentifier
