@@ -2,8 +2,13 @@
 import Principal "mo:base/Principal";
 import Debug "mo:base/Debug";
 import List "mo:base/List";
+import Order "mo:base/Order";
+import Array "mo:base/Array";
+import Container "../backend/Container";
 import Nat "mo:base/Nat";
 import Text "mo:base/Text";
+import Time "mo:base/Time";
+
 import Types "../backend/Types";
 import Buckets "../backend/Buckets";
 
@@ -42,18 +47,20 @@ actor {
   type AuctionOverview = {
     id : AuctionId;
     item : Item;
+    createdAt : Time.Time;
   };
 
   type AuctionDetails = {
     item : Item;
     bidHistory : [Bid];
-    // remainingTime : Nat;
+    createdAt : Time.Time;
   };
 
   type Auction = {
     id : AuctionId;
     item : Item;
     var bidHistory : List.List<Bid>;
+    createdAt : Time.Time;
   };
 
  // Структура для представления пользователя и его кошелька
@@ -74,16 +81,6 @@ type Wallet = {
   // stable var wallets = List.nil<Wallet>();
   stable var idCounter = 0;
 
-  // func tick() : async () {
-  //   for (auction in List.toIter(auctions)) {
-  //     if (auction.remainingTime > 0) {
-  //       auction.remainingTime -= 1;
-  //     };
-  //   };
-  // };
-
-  /// Install a timer:
-  // let timer = Timer.recurringTimer(#seconds 1, tick);
 
   func newAuctionId() : AuctionId {
     let id = idCounter;
@@ -94,17 +91,46 @@ type Wallet = {
   public func newAuction(item : Item) : async () {
     let id = newAuctionId();
     let bidHistory = List.nil<Bid>();
-    let newAuction = { id; item; var bidHistory};
+    let createdAt = Time.now();
+    let newAuction = { id; item; var bidHistory; createdAt};
     auctions := List.push(newAuction, auctions);
   };
+
   public query func getOverviewList() : async [AuctionOverview] {
     func getOverview(auction : Auction) : AuctionOverview = {
       id = auction.id;
       item = auction.item;
+      createdAt = auction.createdAt;
     };
     let overviewList = List.map<Auction, AuctionOverview>(auctions, getOverview);
     List.toArray(List.reverse(overviewList));
   };
+
+
+// public func getTodaysOverviewList() : async [AuctionOverview] {
+//     let today = Date.localDateNow();
+    
+//     // Function to check if an auction was created today
+//     func isTodaysAuction(auction : Auction) : Bool {
+//         let auctionDate = Date.fromTime(auction.createdAt / 1000); // Assuming createdAt is in milliseconds
+//         return auctionDate.year == today.year  auctionDate.month  today.month  auctionDate.day == today.day;
+//     };
+    
+//     // Function to convert auction to overview
+//     func getOverview(auction : Auction) : AuctionOverview {
+//         return { id = auction.id; item = auction.item; createdAt = auction.createdAt; };
+//     };
+
+//     // Filter auctions created today and map them to overview
+//     let todaysAuctions = Array.filter(isTodaysAuction, auctions);
+//     let overviewList = Array.map<Auction, AuctionOverview>(getOverview, todaysAuctions);
+
+//     // Reverse the list if needed
+//     let reversedOverviewList = Array.reverse(overviewList);
+
+//     reversedOverviewList;
+// };
+
 
   func findAuction(auctionId : AuctionId) : Auction {
     let result = List.find<Auction>(auctions, func auction = auction.id == auctionId);
@@ -117,7 +143,7 @@ type Wallet = {
   public query func getAuctionDetails(auctionId : AuctionId) : async AuctionDetails {
     let auction = findAuction(auctionId);
     let bidHistory = List.toArray(List.reverse(auction.bidHistory));
-    { item = auction.item; bidHistory };
+    { item = auction.item; bidHistory; createdAt = auction.createdAt};
   };
 
   func minimumPrice(auction : Auction) : Nat {
@@ -142,16 +168,17 @@ public query func decodeBlobToText(blob: Blob) : async ?Text {
   return text;
 };
 
-  // Function to get wallet balance based on user ID
-// public func getWalletBalance(userId : Nat) : async Nat {
-//     // Find the user with the provided ID in the list of users
-//     let user = List.find((u): u.id == userId, users);
-//     if(?user != null){
-//       return user.wallet;
-//     };
-//     if(?user == null){
-//       return 0;
-//     };
+//   // Function to get wallet balance based on user ID
+// // Modify your function to take a Principal directly
+// public func getWalletBalance(principal: Principal) : async Nat {
+//   let user = Principal.id;
+//     // Find the user with the provided principal
+//     if (let user = List.find({ user = principal.id }, users)) {
+//         return user.wallet
+//     } else {
+//         // Handle case where user is not found
+//         return 0
+//     }
 // };
 
 // public shared ({ caller }) func register() : async () {
