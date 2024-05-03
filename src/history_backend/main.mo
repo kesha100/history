@@ -218,7 +218,6 @@ public query func getHighestBid() : async Nat{
     return bid;
 };
 
-
   // Function to get wallet balance based on user ID
 // Modify your function to take a Principal directly
 // public func getWalletBalance(principal: Principal) : async Nat {
