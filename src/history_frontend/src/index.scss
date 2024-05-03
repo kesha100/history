@@ -6,10 +6,10 @@
 
 body {
   font-family: sans-serif;
-  background-color: #1B1C21;
-  background-image: url('../src/assets/burst_dark.svg');
-  background-size: cover;
-  padding: 150px 40px;
+  background: linear-gradient(to bottom, #1371DF, #606060);
+  // background-image: url('../src/assets/burst_dark.svg');
+  // background-size: cover;
+  padding: 150px 200px;
   font-family: "Montserrat", sans-serif;
 }
 
@@ -38,4 +38,10 @@ br {
   display: block;
   margin: 10px 0;
   content: "";
+}
+
+@media(max-width: 1027px){
+  body{
+    padding: 150px 50px;
+  }
 }

@@ -35,6 +35,7 @@
         content: fileContent, 
       };
       const response = await backend.newAuction(item);
+      console.log(response);
 
       fileContent = null;
       startingBid = 0;

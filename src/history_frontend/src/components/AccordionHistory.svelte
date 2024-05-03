@@ -10,7 +10,15 @@
   export let item;
   export let i;
 
-  console.log(item)
+  let createdAtMs = Number(item?.createdAt / 1000000n);
+
+  let date = new Date(createdAtMs);
+  let formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
 </script>
 
 <Accordion.Root class="w-full sm:max-w-[70%] mx-auto" multiple>
@@ -20,7 +28,7 @@
           on:click={() => change.update(n => !n)} 
           class="flex w-full flex-1 items-center justify-between py-5 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 "
         >
-          March 2024
+          {formattedDate}
           <span
             class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10 lg"
           >
@@ -35,7 +43,7 @@
       {:else}
       
         <Accordion.Content transition={slide} transitionConfig={{ duration: 200 }} class="pb-[25px] text-m tracking-[-0.01em]">
-          {@html item}
+          {@html item?.file}
         </Accordion.Content>
       {/if}
     </Accordion.Item>
