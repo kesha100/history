@@ -1,5 +1,6 @@
 
 import Principal "mo:base/Principal";
+import Timer "mo:base/Timer";
 import Debug "mo:base/Debug";
 import List "mo:base/List";
 import Order "mo:base/Order";
@@ -9,21 +10,12 @@ import Nat "mo:base/Nat";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 
-import Types "../backend/Types";
-import Buckets "../backend/Buckets";
-
 actor {
-
   public query func greet(name : Text) : async Text {
     return "Hello, " # name # "!";
-  }; 
-
-  type Item = {
-    bid : Nat;
-    content : Blob;
   };
 
-  type Itemg = {
+  type Item = {
     bid : Nat;
     content : Blob;
   };
@@ -35,24 +27,17 @@ actor {
   };
 
   type AuctionId = Nat;
-  type FileId = Types.FileId;
-  type FileInfo = Types.FileInfo;
-  type Bucket = Buckets.Bucket;
-
-  type CanisterState<Bucket, Nat> = {
-    bucket  : Bucket;
-    var size : Nat;
-  };
 
   type AuctionOverview = {
     id : AuctionId;
     item : Item;
     createdAt : Time.Time;
+    bidHistory : List.List<Bid>
   };
 
   type AuctionDetails = {
     item : Item;
-    bidHistory : [Bid];
+    bidHistory : List.List<Bid>;
     createdAt : Time.Time;
   };
 
@@ -101,6 +86,7 @@ type Wallet = {
       id = auction.id;
       item = auction.item;
       createdAt = auction.createdAt;
+      bidHistory = auction.bidHistory;
     };
     let overviewList = List.map<Auction, AuctionOverview>(auctions, getOverview);
     List.toArray(List.reverse(overviewList));
@@ -143,7 +129,7 @@ type Wallet = {
   public query func getAuctionDetails(auctionId : AuctionId) : async AuctionDetails {
     let auction = findAuction(auctionId);
     let bidHistory = List.toArray(List.reverse(auction.bidHistory));
-    { item = auction.item; bidHistory; createdAt = auction.createdAt};
+    { item = auction.item; bidHistory = auction.bidHistory; createdAt = auction.createdAt};
   };
 
   func minimumPrice(auction : Auction) : Nat {
@@ -168,8 +154,72 @@ public query func decodeBlobToText(blob: Blob) : async ?Text {
   return text;
 };
 
-//   // Function to get wallet balance based on user ID
-// // Modify your function to take a Principal directly
+type Time = Int;
+let now = Time.now();
+
+public query func getHighestBidAuction() : async AuctionDetails {
+    func getOverview(auction : Auction) : AuctionOverview = {
+        id = auction.id;
+        item = auction.item;
+        bidHistory = auction.bidHistory;
+        createdAt = auction.createdAt;
+    };
+     func isToday(timestamp: Time) : Bool  {
+    let today = Time.now() / 86400; // Convert current time to days since epoch
+    let createdAtDay = timestamp / 86400; // Convert auction creation time to days since epoch
+    return today == createdAtDay;
+};
+    var id : Nat = 0;
+    let highestBidAuction = List.map<Auction, AuctionOverview>(auctions, getOverview);
+    let a = List.toIter(highestBidAuction);
+    var auc = List.nil<Auction>();
+    let c = List.toIter(auc);
+    // for (b in a){
+    //   if(isToday(b.createdAt)){
+    //     let new = { id = b.id; item = b.item; var bidHistory = b.bidHistory; createdAt = b.createdAt};
+    //     auc := List.push(new, auc);
+    //   }else{
+    //     Debug.trap("not found auction");
+    //   };
+    // };
+
+    for (auction in a) {
+        for (auction1 in a) {
+            if (auction.item.bid > auction1.item.bid) {
+                   id := auction.id;
+            
+            };
+        };
+    };
+    let auction = findAuction(id);
+    // let bidHistory = List.toArray(List.reverse(auction.bidHistory));
+    { item = auction.item; bidHistory = auction.bidHistory; createdAt = auction.createdAt};
+};
+
+public query func getHighestBid() : async Nat{
+   func getOverview(auction : Auction) : AuctionOverview = {
+        id = auction.id;
+        item = auction.item;
+        bidHistory = auction.bidHistory;
+        createdAt = auction.createdAt;
+    };
+   let highestBidAuction = List.map<Auction, AuctionOverview>(auctions, getOverview);
+    let a = List.toIter(highestBidAuction);
+    var bid1 : Nat = 0;
+     for (auction in a) {
+        for (auction1 in a) {
+            if (auction.item.bid > auction1.item.bid) {
+                 bid1 := auction.item.bid;
+            
+            };
+        };
+    };
+    let bid : Nat = bid1;
+    return bid;
+};
+
+  // Function to get wallet balance based on user ID
+// Modify your function to take a Principal directly
 // public func getWalletBalance(principal: Principal) : async Nat {
 //   let user = Principal.id;
 //     // Find the user with the provided principal
@@ -392,5 +442,3 @@ public query func decodeBlobToText(blob: Blob) : async ?Text {
 //     fileId
 //   };
 // };
-
-

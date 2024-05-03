@@ -1,10 +1,12 @@
 {
   "canisters": {
-    "icp_transfer_backend": {
-      "main": "src/icp_transfer_backend/main.mo",
-      "type": "motoko",
-      "dependencies": ["icp_ledger_canister"]
-  },
+    "nns": {
+       "declarations": {
+      "node_compatibility": true
+    },
+      "main": "src/nns/main.mo",
+      "type": "motoko"
+    },
   "icp_ledger_canister": {
       "type": "custom",
       "candid": "https://raw.githubusercontent.com/dfinity/ic/33dd2ef2184a64c00e64ff0412e7378d46507005/rs/rosetta-api/icp_ledger/ledger.did",
