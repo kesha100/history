@@ -46,22 +46,3 @@
         </div>
     </nav>
 </header>
-  
-<!-- <style>
-    header {
-      position: fixed;
-      background-color: #1B1C21;
-      padding: 2rem;
-      width: 100%;
-      top: 0px;
-      right: 0px;
-    }
-    nav{
-        display: flex;
-    }
-    nav a {
-      margin: 0 1rem;
-      text-decoration: none;
-      color: white; /* dark gray */
-    }
-</style> -->

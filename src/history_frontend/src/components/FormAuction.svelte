@@ -1,11 +1,16 @@
 <script>
   import { backend } from "$lib/canisters";
+  import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
+
 
   let startingBid = 0;
   let fileData = '';
   let fileContent = null;
   let uploading = false;
   let alertGreen = false;
+
+  let bidresult = -1;
 
   async function handleFileChange(event) {
     const file = event.target.files[0];
@@ -35,6 +40,7 @@
         content: fileContent, 
       };
       const response = await backend.newAuction(item);
+      console.log(response);
 
       fileContent = null;
       startingBid = 0;
@@ -45,6 +51,12 @@
       console.error("Error in creating a new auction:", error);
     }
   }
+
+  onMount(async () => {
+    const overviewList = await backend.getHighestBid();
+    bidresult = Number(overviewList);
+    console.log(bidresult);
+  });
 
 </script>
 
@@ -58,7 +70,7 @@
         <input id="bill" bind:value={startingBid} type="number" class="bg-blue-500 bg-opacity-50 p-4 rounded-2xl w-full"/>
       </div>
       <div>
-        <p>Current top bid: 300</p>
+        <p>Current top bid: {bidresult}</p>
       </div>
     </div>
 
