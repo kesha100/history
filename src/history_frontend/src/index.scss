@@ -6,11 +6,12 @@
 
 body {
   font-family: sans-serif;
-  background: linear-gradient(to bottom, #1371DF, #606060);
+  background: linear-gradient(to bottom, #0927C3, #000000);
   // background-image: url('../src/assets/burst_dark.svg');
   // background-size: cover;
   padding: 150px 200px;
   font-family: "Montserrat", sans-serif;
+  background-attachment: fixed;
 }
 
 button[type="submit"] {
