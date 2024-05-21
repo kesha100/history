@@ -1,196 +1,63 @@
-// import Text "mo:base/Text";
-// import ICP "mo:base/ICP";
-// import Principal "mo:base/Principal";
-// import Result "mo:base/Result";
-// import ICPLedger "mo:base/icp_ledger";
+import IcpLedger "canister:icp_ledger_canister";
+import Debug "mo:base/Debug";
+import Result "mo:base/Result";
+import Option "mo:base/Option";
+import Blob "mo:base/Blob";
+import Error "mo:base/Error";
+import Array "mo:base/Array";
+import Principal "mo:base/Principal";
 
-// type Wallet = {
-//     userPrincipal : Principal;
-//     balance : Nat;
-//     // Add any other properties you need for a wallet
-// };
+actor {
+  type Tokens = {
+    e8s : Nat64;
+  };
 
-// actor {
-//   public func transferICP(to: Principal, amount: ICP.Tokens) : async Result<ICPLedger.BlockIndex, ICPLedger.Error> {
-//     let args: ICPLedger.TransferArgs = {
-//       memo = 0;
-//       amount = amount;
-//       fee = { e8s = 10_000 };
-//       from_subaccount = null;
-//       to = Principal.toAccountIdentifier(to);
-//       created_at_time = null;
-//     };
-//     ICPLedger.transfer(args)
-//   };
-//   type Wallet = {
-//     balance : Nat;
-//   };
-// };
+  type TransferArgs = {
+    amount : Tokens;
+    toPrincipal : Principal;
+    toSubaccount : ?Blob;
+  };
 
 
-// type Wallet = {
-//     userPrincipal : Principal;
-//     balance : Nat;
-//     // Add any other properties you need for a wallet
-// };
+  public shared ({ caller }) func transfer(args : TransferArgs) : async Result.Result<IcpLedger.BlockIndex, Text> {
+    Debug.print(
+      "Transferring "
+      # debug_show (args.amount)
+      # " tokens to principal "
+      # debug_show (args.toPrincipal)
+      # " subaccount "
+      # debug_show (args.toSubaccount)
+    );
 
-// actor {
-//     var userWallets : [Wallet] = [];
+    let transferArgs : IcpLedger.TransferArgs = {
+      // can be used to distinguish between transactions
+      memo = 0;
+      // the amount we want to transfer
+      amount = args.amount;
+      // the ICP ledger charges 10_000 e8s for a transfer
+      fee = { e8s = 10_000 };
+      // we are transferring from the canisters default subaccount, therefore we don't need to specify it
+      from_subaccount = null;
+      // we take the principal and subaccount from the arguments and convert them into an account identifier
+      to = Blob.toArray(Principal.toLedgerAccount(args.toPrincipal, args.toSubaccount));
+      // a timestamp indicating when the transaction was created by the caller; if it is not specified by the caller then this is set to the current ICP time
+      created_at_time = null;
+    };
 
-//     public func addUserWallet(userPrincipal: Principal, balance: Nat) : async () {
-//         let newWallet = { userPrincipal = userPrincipal; balance = balance };
-        
-//     };
-//    module WalletModule {
-//     type Wallet = {
-//         // Define your Wallet type fields here
-//         balance : Nat;
-//         // Other fields...
-//     };
+    try {
+      // initiate the transfer
+      let transferResult = await IcpLedger.transfer(transferArgs);
 
-//     // Define a static function that returns a static instance of Wallet
-//     public func getStaticWallet() : Wallet {
-//         return {
-//             balance = 1000; // Static balance value
-//             // Other static field initializations...
-//         };
-//     };
-// };
-
-// };
-
-
-// import Array "mo:base/Array";
-// // import HashMap "mo:base?HashMap";
-// import Nat "mo:base/Nat";
-// import List "mo:base/List";
-// import Bool "mo:base/Bool";
-// import HashMap "mo:base/HashMap";
-// import Hash "mo:base/Hash";
-// import Result "mo:base/Result";
-// import Text "mo:base/Text";
-
-
-// type User = {
-//   id: Nat;
-//   wallet: Nat;
-// };
-
-// type Transaction = {
-//   userId: Nat;
-//   amount: Nat;
-// };
-
-// type UsersDB = HashMap.HashMap(Nat, User);
-
-// type TransactionsDB = Array.Transaction;
-
-// var usersDB : UsersDB = HashMap.empty();
-// var transactionsDB : TransactionsDB = [];
-
-// func userExists(userId: Nat) : Bool {
-//   switch (usersDB.get(userId)) {
-//     case (?user) { return true; }
-//     case (_) { return false; }
-//   };
-// };
-
-// public func debitICP(user_id: Nat, amount: Nat) : Bool {
-//   if (!userExists(user_id)) {
-//     return false; 
-//   }
-  
-//   let user = usersDB.get(user_id);
-  
-//   if (user.wallet < amount) {
-//     return false;
-//   }
-  
-//   usersDB.put(user_id, {user with wallet = user.wallet - amount});
-  
-//   transactionsDB := Array.append(transactionsDB, {userId = user_id; amount = amount});
-  
-//   return true; 
-// };
-
-
-// Структура для представления пользователя и его кошелька
-// type User = {
-//   id: Text;
-//   wallet: Wallet;
-// };
-
-// // Структура кошелька
-// type Wallet = {
-//   balance: Nat
-// };
-
-// type Transaction = {
-//   userId: Nat;
-//   amount: Nat;
-// };
-
-// type UsersDB = HashMap.HashMap<Nat, User>;
-
-// type TransactionsDB = [Transaction];
-
-// var transactionsDB : TransactionsDB = [];
-
-
-// // База данных пользователей
-// var users : [User] = [];
-
-// actor {
-
-// func userExists(userId: Nat) : Bool {
-//   switch (usersDB.get(userId)) {
-//     case (?user) { return true; };
-//     case _ { return false; };
-//   }
-// };
-
-
-// public func debitICP(user_id: Nat, amount: Nat) : async Bool {{
-//   // function body
-//    if (not userExists(user_id)) {
-//     return false;
-//   };
-
-//  let user = switch (usersDB.get(user_id)) {
-//     case (?user) user;
-//     case _ { return false; }
-//   };
-
-//   if (user.wallet < amount) {
-//     return false;
-//   };
-  
-//   usersDB.put(user_id, {user with wallet = user.wallet - amount});
-  
-//   transactionsDB := Array.push(transactionsDB, {userId = user_id; amount = amount});
-  
-//   return true; 
-
-// }}
-// public func debitICP(user_id: Nat, amount: Nat) : async Bool {
-//   if (not userExists(user_id)) {
-//     return false;
-//   };
-  
-//   let user = switch (usersDB.get(user_id)) {
-//     case (?user) user;
-//     case _ { return false; }
-//   };
-  
-//   if (user.wallet < amount) {
-//     return false;
-//   };
-  
-//   usersDB.put(user_id, {user with wallet = user.wallet - amount});
-  
-//   transactionsDB := Array.push(transactionsDB, {userId = user_id; amount = amount});
-  
-//   return true; 
-// }
-
-// };
+      // check if the transfer was successfull
+      switch (transferResult) {
+        case (#Err(transferError)) {
+          return #err("Couldn't transfer funds:\n" # debug_show (transferError));
+        };
+        case (#Ok(blockIndex)) { return #ok blockIndex };
+      };
+    } catch (error : Error) {
+      // catch any errors that might occur during the transfer
+      return #err("Reject message: " # Error.message(error));
+    };
+  };
+};

@@ -1,11 +1,14 @@
 {
   "canisters": {
-    "nns": {
-      "declarations": {
-      "node_compatibility": true
-    },
-      "main": "src/nns/main.mo",
-      "type": "motoko"
+    "icp_ledger_canister": {
+        "type": "custom",
+        "candid": "https://raw.githubusercontent.com/dfinity/ic/30bf45e80e6b5c1660cd12c6b554d4f1e85a2d11/rs/rosetta-api/icp_ledger/ledger.did",
+        "wasm": "https://download.dfinity.systems/ic/30bf45e80e6b5c1660cd12c6b554d4f1e85a2d11/canisters/ledger-canister.wasm.gz",
+        "remote": {
+            "id": {
+                "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+            }
+        }
     },
     
 
@@ -14,19 +17,6 @@
         "node_compatibility": true
       },
       "main": "src/history_backend/main.mo",
-      "type": "motoko"
-    }, "backend": {
-      "declarations": {
-        "node_compatibility": true
-      },
-      "main": "src/backend/Container.mo",
-      "type": "motoko"
-    },
-    "transaction": {
-      "declarations": {
-        "node_compatibility": true
-      },
-      "main": "src/transaction/main.mo",
       "type": "motoko"
     },
     "history_frontend": {
