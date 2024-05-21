@@ -4,7 +4,7 @@
 
 <main>
     <h1 class="md-2" >Tomorrow auction</h1>
-    <div>
+    <div class="text-center">
         <p>How the solar eclipse may affect the brain and bring people together</p>
         <span>The date is 28 May, 585 BC, in what is now present-day Anatolia in Turkey. The Medes, an ancient people from modern-day Iran, and the Lydians – a kingdom from the south of modern-day Turkey – have been fighting for six years. According to the Greek historian Herodotus, the war shows little sign of ending, with neither side making significant progress. It will take a solar eclipse to end the bloodshed.</span>
         <br/>

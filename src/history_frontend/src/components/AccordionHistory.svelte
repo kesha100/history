@@ -43,7 +43,7 @@
       {:else}
       
         <Accordion.Content transition={slide} transitionConfig={{ duration: 200 }} class="pb-[25px] text-m tracking-[-0.01em]">
-          {@html item?.file}
+          <pre class="whitespace-pre-wrap">{item?.file}</pre>
         </Accordion.Content>
       {/if}
     </Accordion.Item>

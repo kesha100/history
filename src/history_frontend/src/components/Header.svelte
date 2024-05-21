@@ -4,7 +4,7 @@
     let menuOpen = writable(false);
 </script>
 
-<header class="fixed bg-gray-900 p-8 w-full top-0 right-0">
+<header class="fixed bg-[#09209d40] backdrop-blur-md p-8 w-full top-0 right-0">
     <nav>
         <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
             <a on:click={() => menuOpen.update(n => false)} href="/" class="flex items-center">

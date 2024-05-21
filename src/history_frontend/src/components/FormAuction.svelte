@@ -1,8 +1,7 @@
 <script>
   import { backend } from "$lib/canisters";
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-
+  import down from '../assets/down.png'
 
   let startingBid = 0;
   let fileData = '';
@@ -10,7 +9,7 @@
   let uploading = false;
   let alertGreen = false;
 
-  let bidresult = -1;
+  let bidresult = 0;
 
   async function handleFileChange(event) {
     const file = event.target.files[0];
@@ -60,27 +59,25 @@
 
 </script>
 
-<main class="p-4 mt-9 border-t border-solid border-white border-b border-solid border-white">
+<main class="p-4 mt-9 border-t border-solid border-white ">
   <h1>Create story</h1>
-  <form class="flex align-baseline" on:submit|preventDefault={createNewAuction}>
+  <div class="flex justify-center mt-9 mb-9"><img src={down} alt="..."/></div>
+  <p class="text-center text-2xl">Current top bid: {bidresult}</p>
 
-    <div class=" lg:flex flex-space-between items-center gap-10 sm:column">
+  <form class="flex align-baseline border-2 border-[#C2BE2B] rounded-[20px] p-6" on:submit|preventDefault={createNewAuction}>
+
+    <div class="flex items-center gap-10 flex-col">
       <div>
         <label for="bill" class="block mb-2 text-m font-medium text-gray-900 dark:text-white">your bid</label>
-        <input id="bill" bind:value={startingBid} type="number" class="bg-blue-500 bg-opacity-50 p-4 rounded-2xl w-full"/>
+        <input id="bill" bind:value={startingBid} type="number" class="bg-[#C2BE2B] p-4 rounded-2xl w-full"/>
       </div>
-      <div>
-        <p>Current top bid: {bidresult}</p>
+      <div class="w-[200px]">
+        <label for="files" class="bg-[#C2BE2B] p-4 rounded-2xl">Select Txt File</label>
+        <input id="files" type="file" style="visibility:hidden;" on:change={handleFileChange}>
+        <p>{fileData}</p>
       </div>
     </div>
-
-    <div>
-      <label for="files" class="bg-blue-500 bg-opacity-50 p-4 rounded-2xl">Select Txt File</label>
-      <input id="files" type="file" style="visibility:hidden;" on:change={handleFileChange}>
-
-    </div>
-    <p>{fileData}</p>
-    <button type="submit" class="pt-3 pr-10 pb-3 pl-10 border border-solid border-white rounded-3xl">Submit</button>
+    <button type="submit" class="pt-6 w-[200px] pr-10 pb-6 pl-10 border border-3 border-[#C2BE2B] rounded-3xl">Submit</button>
 
   </form>
   {#if alertGreen}
