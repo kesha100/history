@@ -1,12 +1,6 @@
 {
   "canisters": {
-    "nns": {
-      "declarations": {
-      "node_compatibility": true
-    },
-      "main": "src/nns/main.mo",
-      "type": "motoko"
-    },
+  
     
 
     "history_backend": {
@@ -22,13 +16,7 @@
       "main": "src/backend/Container.mo",
       "type": "motoko"
     },
-    "transaction": {
-      "declarations": {
-        "node_compatibility": true
-      },
-      "main": "src/transaction/main.mo",
-      "type": "motoko"
-    },
+   
     "history_frontend": {
       "dependencies": [
         "history_backend"
