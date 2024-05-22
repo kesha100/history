@@ -104,12 +104,14 @@
       <Accordion.Item value="${i}" class="group border-b border-dark-10 px-1.5">
         <Accordion.Header>
           <Accordion.Trigger
+            on:click={() => change.update(n => !n)} 
             class="flex w-full flex-1 items-center justify-between py-5 text-[15px] font-medium transition-all [&[data-state=open]>span>svg]:rotate-180 "
           >
             {item.title}
             <span
               class="inline-flex size-8 items-center justify-center rounded-[7px] bg-transparent transition-all hover:bg-dark-10 lg"
             >
+            <img src={$change ? up : down} alt="toggle" />
             <!-- <img src={$change ? up : down} alt="toggle" /> -->
           </span>
           </Accordion.Trigger>
