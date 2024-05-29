@@ -12,7 +12,7 @@ import Time "mo:base/Time";
 import Result "mo:base/Result";
 import Blob "mo:base/Blob";
 import Error "mo:base/Error";
-import IcpLedger "canister:icp_ledger_canister";
+// import IcpLedger "canister:icp_ledger_canister";
 
 actor {
 

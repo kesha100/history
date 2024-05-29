@@ -51,6 +51,11 @@
     }
   }
 
+  async function Checl() {
+    let a = backend.AccountIdentifier();
+    console.log(a);
+  }
+
   onMount(async () => {
     const overviewList = await backend.getHighestBid();
     bidresult = Number(overviewList);
@@ -78,8 +83,9 @@
       </div>
     </div>
     <button type="submit" class="pt-6 w-[200px] pr-10 pb-6 pl-10 border border-3 border-[#C2BE2B] rounded-3xl">Submit</button>
-
   </form>
+  <button on:click={Checl} class="pt-6 w-[200px] pr-10 pb-6 pl-10 border border-3 border-[#C2BE2B] rounded-3xl">Submit Check</button>
+
   {#if alertGreen}
   <div class="bg-green-100 border border-green-400 text-green-900 px-9 py-3 rounded fixed bottom-9 right-9 transition-transform duration-300 transform hover:-translate-y-1" role="alert">
     <strong class="font-bold">Story created!</strong>
