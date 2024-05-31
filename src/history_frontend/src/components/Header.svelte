@@ -18,16 +18,16 @@
             <div class="hidden lg:block">
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                     <li>
-                        <a href="/" class="block py-2 pr-4 pl-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">About</a>
+                        <a href="/" class="block py-2 pr-4 pl-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">About the DAO</a>
                     </li>
                     <li>
-                        <a href="/auction" class="block py-2 pr-4 pl-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Auction</a>
+                        <a href="/auction" class="block py-2 pr-4 pl-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Block Record Auction</a>
                     </li>
                     <li>
-                        <a href="/today" class="block py-2 pr-4 pl-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Today</a>
+                        <a href="/today" class="block py-2 pr-4 pl-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Today's Information</a>
                     </li>
                     <li>
-                        <a href="/history" class="block py-2 pr-4 pl-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">History</a>
+                        <a href="/history" class="block py-2 pr-4 pl-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Past Record</a>
                     </li>
                 </ul>
             </div>

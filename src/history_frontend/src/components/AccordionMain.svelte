@@ -8,7 +8,7 @@
    
     const items = [
       {
-        title: "What is the History DAO and why are we making it?",
+        title: "Block Record DAO",
         text_content: [
           {
             title_content: "",

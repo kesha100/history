@@ -4,7 +4,7 @@
 </script>
 
 <main>
-  <h1>About the DAO</h1>
+  <h1>Block Record DAO</h1>
     <div class="mt-[30px]">
         <div class="roadmap-phase" data-phase="1">
           <div class="roadmap-phase-inside1">
