@@ -14,13 +14,14 @@
     "@dfinity/agent": "^0.20.2",
     "@dfinity/auth-client": "^1.2.0",
     "@dfinity/candid": "^0.20.0",
-    "@dfinity/principal": "^0.20.0",
+    "@dfinity/principal": "^0.20.2",
     "bits-ui": "^0.20.1"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^2.0.0",
     "@sveltejs/kit": "^1.21.0",
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@types/node": "^20.14.2",
     "autoprefixer": "^10.4.19",
     "dotenv": "^16.3.1",
     "postcss": "^8.4.38",

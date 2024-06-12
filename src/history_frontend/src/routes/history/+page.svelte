@@ -55,14 +55,14 @@
 
   </script>
   <main>
-    <h1>Past History</h1>
+    <h1>Past Record</h1>
     <div class="flex justify-between items-center">
-      <h2>FILTER</h2>
+      <!-- <h2>FILTER</h2> -->
 
-      <div class="flex">
+      <!-- <div class="flex">
         <input id="bill" placeholder="Search Date (May 20, 2020)" bind:value={search} on:input={searchData} type="text" class="bg-[#C2BE2B] p-4 rounded-2xl w-[300px]"/>
         <button class="ml-5"><img src={searchIcon} alt="..."/></button>
-      </div>
+      </div> -->
     </div>
     {#if $isLoading === true}
       <p>Loading...</p>

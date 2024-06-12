@@ -2,14 +2,15 @@
   import { backend } from "$lib/canisters";
   import { onMount } from 'svelte';
   import down from '../assets/down.png';
-  // import ledgerActor from "../agentledger";
-  // import { getAccountBalance } from "../agentledger";
+  import { ledgerActor } from "../agentledger.ts";
+  import { Principal } from "@dfinity/principal";
 
   let startingBid = 0;
   let fileData = '';
   let fileContent = null;
   let uploading = false;
   let alertGreen = false;
+  let balance;
 
   let bidresult = 0;
 
@@ -53,39 +54,51 @@
     }
   }
 
-  // async function Checl() {
-  //   let a = ledgerActor.archives();
-  //   console.log(a);
-  // }
-
   onMount(async () => {
     const overviewList = await backend.getHighestBid();
     bidresult = Number(overviewList);
-    console.log(bidresult);
   });
 
-
-
-  let balance;
-  let loading = true;
-  let errorMessage = '';
-
-  // async function checkBalance() {
-  //   try {
-  //     // Replace the following array with the actual AccountIdentifier
-  //     let accountIdentifier = new Uint8Array(32).fill(0); // Example placeholder
-
-  //     balance = await getAccountBalance(accountIdentifier);
-  //     loading = false;
-  //   } catch (error) {
-  //     errorMessage = 'Failed to fetch balance';
-  //     loading = false;
-  //   }
-  // }
-
-  // onMount(() => {
-  //   checkBalance();
-  // });
+  onMount(async () => {
+    try {
+        let decimals = await ledgerActor.archives();
+        console.log('Decimals:', decimals);
+    } catch (error) {
+        console.error('Error fetching decimals:', error);
+    }
+});
+async function getAccountBalance() {
+  try {
+    let accountIdentifier = "qcssp-q4zmm-t4kfs-iax73-h2xcu-ccrzq-luv6f-5jl3k-xe65y-zs37e-cae";
+    let accountIdentifier2 = Principal.fromText(accountIdentifier);
+    let subaccount = new Uint8Array(32);
+    balance = await ledgerActor.account_identifier({ owner: accountIdentifier2, subaccount: [subaccount]});
+    const approveResult = await ledgerActor.icrc2_approve({
+      spender: { owner: accountIdentifier2, subaccount: [] },
+      amount: 4,
+      from_subaccount : [],
+      expected_allowance : [],
+      expires_at : [],
+      fee : [],
+      memo : [],
+      created_at_time : [],
+    });
+    const fin_transfer = await ledgerActor.transfer({
+      to: balance,
+      fee: { e8s: 10000 },
+      memo: 12345,
+      from_subaccount: [],
+      created_at_time: [{ timestamp_nanos: 1622548800000000000 }],
+      amount: {e8s:3} 
+    })
+    console.log(balance);
+    console.log(approveResult);
+    console.log(fin_transfer);
+  } catch (error) {
+    console.error('Error fetching account balance:', error);
+    throw error;
+  }
+}
 
 </script>
 
@@ -109,9 +122,8 @@
     </div>
     <button type="submit" class="pt-6 w-[200px] pr-10 pb-6 pl-10 border border-3 border-[#C2BE2B] rounded-3xl">Submit</button>
   </form>
-  <!-- <button on:click={Checl} class="pt-6 w-[200px] pr-10 pb-6 pl-10 border border-3 border-[#C2BE2B] rounded-3xl">Submit Check</button>
-  <button on:click={checkBalance}>Check Balance</button>
-  <p>Balance: {balance ? balance.e8s : 'No balance available'}</p> -->
+
+  <button on:click={getAccountBalance}>Check Balance</button>
 
   {#if alertGreen}
   <div class="bg-green-100 border border-green-400 text-green-900 px-9 py-3 rounded fixed bottom-9 right-9 transition-transform duration-300 transform hover:-translate-y-1" role="alert">

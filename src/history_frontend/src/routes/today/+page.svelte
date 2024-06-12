@@ -1,5 +1,5 @@
 <main>
-    <h1>Today top history</h1>
+    <h1>Today's Information</h1>
     <div class="mt-7">
         <span>Text from winning auction bid will go here</span>
         <!-- <p class="font-bold">Gaza evacuation warnings from IDF contain many errors, BBC finds</p>

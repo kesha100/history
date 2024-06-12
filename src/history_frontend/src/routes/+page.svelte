@@ -5,7 +5,7 @@
 
 <main>
   <h1>Block Record DAO</h1>
-    <div class="mt-[30px]">
+    <!-- <div class="mt-[30px]">
         <div class="roadmap-phase" data-phase="1">
           <div class="roadmap-phase-inside1">
             <h2 class="text-2xl font-bold mb-2">Phase 1</h2>
@@ -38,7 +38,7 @@
             <p class="text-blue-400 mt-2">October 2026</p>
           </div>
         </div>
-    </div>
+    </div> -->
 
     <AccordionMain/>
 </main>
