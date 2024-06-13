@@ -10,7 +10,10 @@
             }
         }
     },
-    
+    "nns": {
+      "main": "src/nns/main.mo",
+      "type": "motoko"
+    },
 
     "history_backend": {
       "declarations": {
