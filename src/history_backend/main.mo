@@ -12,9 +12,40 @@ import Time "mo:base/Time";
 import Result "mo:base/Result";
 import Blob "mo:base/Blob";
 import Error "mo:base/Error";
+import Nat64 "mo:base/Nat64";
+import Int "mo:base/Int";
+import Trie "mo:base/Trie";
+import Hash "mo:base/Hash";
+import HashMap "mo:base/HashMap";
 import IcpLedger "canister:icp_ledger_canister";
+import LT           "../ledger/ledger";
+import Helpers "helpers";
+import DateTime "mo:datetime/DateTime";
+
+import Types "/Types";
+import Account "../transaction/Account";
 
 actor {
+public type Subaccount = Blob;
+  public type Account = {
+    owner : Principal;
+    subaccount : ?Subaccount;
+  };
+
+let Ledger = actor "ryjl3-tyaaa-aaaaa-aaaba-cai" : LT.Self;
+let icp_fee : Nat64 = 10_000;
+
+  public  func transferICP(    transferFrom : Principal, transferTo : [Nat8],transferAmount : Nat64) : async LT.TransferResult {
+      let res =  await Ledger.icrc2_transfer_from({
+        memo: Nat64 = 0;
+        from_subaccount = ?Helpers.getSubaccount(transferFrom);
+        to = transferTo;
+        //  The amount of ICP, minus the necessary transaction fee
+        amount = { e8s = transferAmount - icp_fee };
+        fee = { e8s = icp_fee };
+        created_at_time = ?{ timestamp_nanos = Nat64.fromNat(Int.abs(Time.now())) };
+      });
+  };
 
 
   public query func greet(name : Text) : async Text {
@@ -38,20 +69,36 @@ actor {
     id : AuctionId;
     item : Item;
     createdAt : Time.Time;
-    bidHistory : List.List<Bid>
+    month : Int;
+    // bidHistory : List.List<Bid>
   };
+  type ListMonth = {
+  january : List.List<Auction>;
+  february : List.List<Auction>;
+  march : List.List<Auction>;
+  april : List.List<Auction>;
+  may : List.List<Auction>;
+  june : List.List<Auction>;
+  july : List.List<Auction>;
+  august : List.List<Auction>;
+  september : List.List<Auction>;
+  october : List.List<Auction>;
+  november : List.List<Auction>;
+  december : List.List<Auction>;
+};
 
   type AuctionDetails = {
     item : Item;
-    bidHistory : List.List<Bid>;
+    // bidHistory : List.List<Bid>;
     createdAt : Time.Time;
   };
 
   type Auction = {
     id : AuctionId;
     item : Item;
-    var bidHistory : List.List<Bid>;
+    // bidHistory : List.List<Bid>;
     createdAt : Time.Time;
+    month : Int;
   };
 
  // Структура для представления пользователя и его кошелька
@@ -83,7 +130,9 @@ type Wallet = {
     let id = newAuctionId();
     let bidHistory = List.nil<Bid>();
     let createdAt = Time.now();
-    let newAuction = { id; item; var bidHistory; createdAt};
+    let dateTime : DateTime.DateTime = DateTime.fromTime(Time.now());
+    let month = dateTime.dayOfYear();
+    let newAuction = { id; item; var bidHistory; createdAt; month};
     auctions := List.push(newAuction, auctions);
   };
 
@@ -92,7 +141,8 @@ type Wallet = {
       id = auction.id;
       item = auction.item;
       createdAt = auction.createdAt;
-      bidHistory = auction.bidHistory;
+      month = auction.month;
+      // bidHistory = auction.bidHistory;
     };
     let overviewList = List.map<Auction, AuctionOverview>(auctions, getOverview);
     List.toArray(List.reverse(overviewList));
@@ -134,26 +184,26 @@ type Wallet = {
 
   public query func getAuctionDetails(auctionId : AuctionId) : async AuctionDetails {
     let auction = findAuction(auctionId);
-    let bidHistory = List.toArray(List.reverse(auction.bidHistory));
-    { item = auction.item; bidHistory = auction.bidHistory; createdAt = auction.createdAt};
+    // let bidHistory = List.toArray(List.reverse(auction.bidHistory));
+    { item = auction.item;  createdAt = auction.createdAt};
   };
 
-  func minimumPrice(auction : Auction) : Nat {
-    switch (auction.bidHistory) {
-      case null 1;
-      case (?(lastBid, _)) lastBid.price + 1;
-    };
-  };
+  // func minimumPrice(auction : Auction) : Nat {
+  //   switch (auction.bidHistory) {
+  //     case null 1;
+  //     case (?(lastBid, _)) lastBid.price + 1;
+  //   };
+  // };
 
-  public shared (message) func makeBid(auctionId : AuctionId, price : Nat) : async () {
-    let originator = message.caller;
+  // public shared (message) func makeBid(auctionId : AuctionId, price : Nat) : async () {
+  //   let originator = message.caller;
    
-    let auction = findAuction(auctionId);
-    if (price < minimumPrice(auction)) {
-      Debug.trap("Price too low");
-    };
+  //   let auction = findAuction(auctionId);
+  //   if (price < minimumPrice(auction)) {
+  //     Debug.trap("Price too low");
+  //   };
    
-  };
+  // };
 
 public query func decodeBlobToText(blob: Blob) : async ?Text {
   let text : ?Text = Text.decodeUtf8(blob);
@@ -167,8 +217,9 @@ public query func getHighestBidAuction() : async AuctionDetails {
     func getOverview(auction : Auction) : AuctionOverview = {
         id = auction.id;
         item = auction.item;
-        bidHistory = auction.bidHistory;
+        // bidHistory = auction.bidHistory;
         createdAt = auction.createdAt;
+        month = auction.month;
     };
      func isToday(timestamp: Time) : Bool  {
     let today = Time.now() / 86400; // Convert current time to days since epoch
@@ -180,6 +231,10 @@ public query func getHighestBidAuction() : async AuctionDetails {
     let a = List.toIter(highestBidAuction);
     var auc = List.nil<Auction>();
     let c = List.toIter(auc);
+   let nanoseconds : Time.Time = Time.now();
+    let dateTime : DateTime.DateTime = DateTime.fromTime(nanoseconds);
+    let month : Int = dateTime.dayOfYear();
+    
     // for (b in a){
     //   if(isToday(b.createdAt)){
     //     let new = { id = b.id; item = b.item; var bidHistory = b.bidHistory; createdAt = b.createdAt};
@@ -188,26 +243,47 @@ public query func getHighestBidAuction() : async AuctionDetails {
     //     Debug.trap("not found auction");
     //   };
     // };
-
-    for (auction in a) {
-        for (auction1 in a) {
-            if (auction.item.bid > auction1.item.bid) {
-                   id := auction.id;
-            
-            };
-        };
+ 
+ let yesterday = (Time.now() / (1000000000 * 86400) - 1) * 86400;
+ var highestBidAuctionId : Nat = 0;
+  var highestBid1 : Nat = 0;
+for (auction in a) {
+    for(auction1 in a){
+let auctionDay = auction.createdAt / (1000000000 * 86400);
+    if (auctionDay == yesterday) {
+        if (auction.item.bid > highestBid1) {
+            highestBid1 := auction.item.bid;
+            highestBidAuctionId := auction.id;
+        }
+    }
     };
-    let auction = findAuction(id);
+};
+
+    // for (auction in a) {
+    //     for (auction1 in a) {
+    //         if (auction.item.bid > auction1.item.bid) {
+    //                id := auction.id;
+            
+    //         };
+    //         if(auction.createdAt == yesterday){
+    //           id:= auction.id
+              
+    //         }
+    //     };
+    // };
+    
+    let auction = findAuction(highestBidAuctionId);
     // let bidHistory = List.toArray(List.reverse(auction.bidHistory));
-    { item = auction.item; bidHistory = auction.bidHistory; createdAt = auction.createdAt};
+    { item = auction.item;  createdAt = auction.createdAt};
 };
 
 public query func getHighestBid() : async Nat{
    func getOverview(auction : Auction) : AuctionOverview = {
         id = auction.id;
         item = auction.item;
-        bidHistory = auction.bidHistory;
+        // bidHistory = auction.bidHistory;
         createdAt = auction.createdAt;
+        month = auction.month;
     };
    let highestBidAuction = List.map<Auction, AuctionOverview>(auctions, getOverview);
     let a = List.toIter(highestBidAuction);
@@ -223,4 +299,85 @@ public query func getHighestBid() : async Nat{
     let bid : Nat = bid1;
     return bid;
 };
+
+public query func groupAuctionByMonths() :async ListMonth {
+
+  func getOverview(auction : Auction) : AuctionOverview = {
+    id = auction.id;
+    item = auction.item;
+    createdAt = auction.createdAt;
+    month = auction.month;
+  };
+
+var list1 : List.List<Auction> = List.nil<Auction>();
+var list2 : List.List<Auction> = List.nil<Auction>();
+var list3 : List.List<Auction> = List.nil<Auction>();
+var list4 : List.List<Auction> = List.nil<Auction>();
+var list5 : List.List<Auction> = List.nil<Auction>();
+var list6 : List.List<Auction> = List.nil<Auction>();
+var list7 : List.List<Auction> = List.nil<Auction>();
+var list8 : List.List<Auction> = List.nil<Auction>();
+var list9 : List.List<Auction> = List.nil<Auction>();
+var list10 : List.List<Auction> = List.nil<Auction>();
+var list11 : List.List<Auction> = List.nil<Auction>();
+var list12 : List.List<Auction> = List.nil<Auction>();
+  let highestBidAuction = List.map<Auction, AuctionOverview>(auctions, getOverview);
+  let a = List.toIter(highestBidAuction);
+
+  for (auction in a) {
+    if(auction.month >= 1 and auction.month <= 30){
+      list1 := List.push(auction, list1);
+    };
+    if(auction.month >= 31 and auction.month <= 60 ){
+      list2 := List.push(auction, list2);
+    };
+    if(auction.month >= 61 and auction.month <= 90 ){
+      list3 := List.push(auction, list3);
+    };
+    if(auction.month >= 91 and auction.month <= 120 ){
+      list4 := List.push(auction, list4);
+    };
+    if(auction.month >= 121 and auction.month <= 150 ){
+      list5 := List.push(auction, list5);
+    };
+    if(auction.month >= 151 and auction.month <= 180 ){
+      list6 := List.push(auction, list6);
+    };
+    if(auction.month >= 181 and auction.month <= 210 ){
+      list7 := List.push(auction, list7);
+    };
+    if(auction.month >= 211 and auction.month <= 240){
+      list8 := List.push(auction, list8);
+    };
+    if(auction.month >= 241 and auction.month <= 270){
+      list9 := List.push(auction, list9);
+    };
+    if(auction.month >= 271 and auction.month <= 300 ){
+      list10 := List.push(auction, list10);
+    };
+    if(auction.month >= 301 and auction.month <= 330 ){
+      list11 := List.push(auction, list11);
+    };
+    if(auction.month >= 331 and auction.month <= 365){
+      list12 := List.push(auction, list12);
+    };
+    
+  };
+let listMonth = {
+   january = list1;
+   february = list2;
+   march = list3;
+   april = list4;
+   may = list5;
+   june = list6;
+   july = list7;
+   august = list8;
+   september = list9;
+   october = list10;
+   november = list11;
+   december = list12;
+};
+  return listMonth;
+};
+
 };
