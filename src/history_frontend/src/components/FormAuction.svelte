@@ -14,6 +14,9 @@
 
   let bidresult = 0;
 
+  let accountIdentifier = "qcssp-q4zmm-t4kfs-iax73-h2xcu-ccrzq-luv6f-5jl3k-xe65y-zs37e-cae";
+  let accountIdentifier2 = Principal.fromText(accountIdentifier);
+
   async function handleFileChange(event) {
     const file = event.target.files[0];
     if (file) {
@@ -69,10 +72,27 @@
 });
 async function getAccountBalance() {
   try {
-    let accountIdentifier = "qcssp-q4zmm-t4kfs-iax73-h2xcu-ccrzq-luv6f-5jl3k-xe65y-zs37e-cae";
-    let accountIdentifier2 = Principal.fromText(accountIdentifier);
     let subaccount = new Uint8Array(32);
     balance = await ledgerActor.account_identifier({ owner: accountIdentifier2, subaccount: [subaccount]});
+    
+    // const fin_transfer = await ledgerActor.transfer({
+    //   to: balance,
+    //   fee: { e8s: 10000 },
+    //   memo: 12345,
+    //   from_subaccount: [],
+    //   created_at_time: [{ timestamp_nanos: 1622548800000000000 }],
+    //   amount: {e8s:3} 
+    // })
+    console.log(balance);
+    // console.log(fin_transfer);
+  } catch (error) {
+    console.error('Error fetching account balance:', error);
+    throw error;
+  }
+}
+
+async function getApproveResult(){
+  try {
     const approveResult = await ledgerActor.icrc2_approve({
       spender: { owner: accountIdentifier2, subaccount: [] },
       amount: 4,
@@ -83,20 +103,9 @@ async function getAccountBalance() {
       memo : [],
       created_at_time : [],
     });
-    const fin_transfer = await ledgerActor.transfer({
-      to: balance,
-      fee: { e8s: 10000 },
-      memo: 12345,
-      from_subaccount: [],
-      created_at_time: [{ timestamp_nanos: 1622548800000000000 }],
-      amount: {e8s:3} 
-    })
-    console.log(balance);
     console.log(approveResult);
-    console.log(fin_transfer);
   } catch (error) {
-    console.error('Error fetching account balance:', error);
-    throw error;
+    console.log(error);
   }
 }
 
@@ -124,6 +133,7 @@ async function getAccountBalance() {
   </form>
 
   <button on:click={getAccountBalance}>Check Balance</button>
+  <button on:click={getApproveResult}>Check Result</button>
 
   {#if alertGreen}
   <div class="bg-green-100 border border-green-400 text-green-900 px-9 py-3 rounded fixed bottom-9 right-9 transition-transform duration-300 transform hover:-translate-y-1" role="alert">

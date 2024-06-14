@@ -2,7 +2,7 @@ import { Actor, HttpAgent } from '@dfinity/agent';
 import { idlFactory } from '../../declarations/icp_ledger_canister/icp_ledger_canister.did.js';
 
 // Ensure the canisterId is correctly defined
-const canisterId = "bkyz2-fmaaa-aaaaa-qaaaq-cai";
+const canisterId = "be2us-64aaa-aaaaa-qaabq-cai";
 if (!canisterId) {
   console.error("Canister ID is undefined");
 } else {
@@ -11,7 +11,7 @@ if (!canisterId) {
 
 // Create an HTTP agent
 const agent = new HttpAgent({
-  host: 'http://127.0.0.1:4943/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai&id=bkyz2-fmaaa-aaaaa-qaaaq-cai'
+  host: 'http://127.0.0.1:4943/?canisterId=br5f7-7uaaa-aaaaa-qaaca-cai&id=be2us-64aaa-aaaaa-qaabq-cai'
 });
 
 if (process.env.NODE_ENV === 'development') {

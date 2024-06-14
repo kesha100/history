@@ -11,7 +11,6 @@
         }
     },
     
-
     "history_backend": {
       "declarations": {
         "node_compatibility": true
@@ -29,6 +28,18 @@
       "source": ["src/history_frontend/dist/"],
       "type": "assets",
       "workspace": "history_frontend"
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    },
+    "ic": {
+      "providers": [
+        "https://mainnet.dfinity.network"
+      ],
+      "type": "persistent"
     }
   },
 
