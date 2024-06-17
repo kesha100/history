@@ -36,7 +36,7 @@ let Ledger = actor "ryjl3-tyaaa-aaaaa-aaaba-cai" : LT.Self;
 let icp_fee : Nat64 = 10_000;
 
   public  func transferICP(    transferFrom : Principal, transferTo : [Nat8],transferAmount : Nat64) : async LT.TransferResult {
-      let res =  await Ledger.icrc2_transfer_from({
+      let res =  await Ledger.transfer({
         memo: Nat64 = 0;
         from_subaccount = ?Helpers.getSubaccount(transferFrom);
         to = transferTo;
@@ -69,7 +69,7 @@ let icp_fee : Nat64 = 10_000;
     id : AuctionId;
     item : Item;
     createdAt : Time.Time;
-    month : Int;
+    month : Nat;
     // bidHistory : List.List<Bid>
   };
   type ListMonth = {
@@ -98,7 +98,7 @@ let icp_fee : Nat64 = 10_000;
     item : Item;
     // bidHistory : List.List<Bid>;
     createdAt : Time.Time;
-    month : Int;
+    month : Nat;
   };
 
  // Структура для представления пользователя и его кошелька
@@ -221,59 +221,26 @@ public query func getHighestBidAuction() : async AuctionDetails {
         createdAt = auction.createdAt;
         month = auction.month;
     };
-     func isToday(timestamp: Time) : Bool  {
-    let today = Time.now() / 86400; // Convert current time to days since epoch
-    let createdAtDay = timestamp / 86400; // Convert auction creation time to days since epoch
-    return today == createdAtDay;
-};
+      let dateTime1 : DateTime.DateTime = DateTime.fromTime(Time.now());
+      
+      let today  = dateTime1.dayOfYear;
+      let yesterday : Nat = today() - 1;
+
     var id : Nat = 0;
+    var bidAuc : Nat = 0;
     let highestBidAuction = List.map<Auction, AuctionOverview>(auctions, getOverview);
     let a = List.toIter(highestBidAuction);
-    var auc = List.nil<Auction>();
-    let c = List.toIter(auc);
-   let nanoseconds : Time.Time = Time.now();
-    let dateTime : DateTime.DateTime = DateTime.fromTime(nanoseconds);
-    let month : Int = dateTime.dayOfYear();
-    
-    // for (b in a){
-    //   if(isToday(b.createdAt)){
-    //     let new = { id = b.id; item = b.item; var bidHistory = b.bidHistory; createdAt = b.createdAt};
-    //     auc := List.push(new, auc);
-    //   }else{
-    //     Debug.trap("not found auction");
-    //   };
-    // };
- 
- let yesterday = (Time.now() / (1000000000 * 86400) - 1) * 86400;
- var highestBidAuctionId : Nat = 0;
-  var highestBid1 : Nat = 0;
+   
 for (auction in a) {
-    for(auction1 in a){
-let auctionDay = auction.createdAt / (1000000000 * 86400);
-    if (auctionDay == yesterday) {
-        if (auction.item.bid > highestBid1) {
-            highestBid1 := auction.item.bid;
-            highestBidAuctionId := auction.id;
-        }
-    }
+    if (auction.month == yesterday) {
+      if(auction.item.bid > bidAuc){
+        bidAuc := auction.item.bid;
+        id := auction.id;
+      };
     };
+  
 };
-
-    // for (auction in a) {
-    //     for (auction1 in a) {
-    //         if (auction.item.bid > auction1.item.bid) {
-    //                id := auction.id;
-            
-    //         };
-    //         if(auction.createdAt == yesterday){
-    //           id:= auction.id
-              
-    //         }
-    //     };
-    // };
-    
-    let auction = findAuction(highestBidAuctionId);
-    // let bidHistory = List.toArray(List.reverse(auction.bidHistory));
+    let auction = findAuction(id);
     { item = auction.item;  createdAt = auction.createdAt};
 };
 
